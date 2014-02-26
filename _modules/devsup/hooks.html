@@ -1,0 +1,142 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devsup.hooks &mdash; pyDevSup 0.1-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pyDevSup 0.1-dev documentation" href="../../index.html" />
+    <link rel="up" title="devsup" href="../devsup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pyDevSup 0.1-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../devsup.html" accesskey="U">devsup</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devsup.hooks</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">_dbapi</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">_nullapi</span> <span class="kn">as</span> <span class="nn">_dbapi</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&quot;hooknames&quot;</span><span class="p">,</span>
+    <span class="s">&quot;addHook&quot;</span><span class="p">,</span>
+    <span class="s">&quot;debugHooks&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">hooknames</span> <span class="o">=</span> <span class="n">_dbapi</span><span class="o">.</span><span class="n">_hooks</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+<div class="viewcode-block" id="addHook"><a class="viewcode-back" href="../../devsup.html#devsup.hooks.addHook">[docs]</a><span class="k">def</span> <span class="nf">addHook</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;addHook(&quot;stats&quot;, funcion)</span>
+<span class="sd">    Add callable to IOC start sequence.</span>
+<span class="sd">    </span>
+<span class="sd">    Callables are run in the reverse of the order in</span>
+<span class="sd">    which they were added.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; def show():</span>
+<span class="sd">    ...     print &#39;State Occurred&#39;</span>
+<span class="sd">    &gt;&gt;&gt; addHook(&quot;AfterIocRunning&quot;, show)</span>
+<span class="sd">    </span>
+<span class="sd">    An additional special hook &#39;AtIocExit&#39; may be used</span>
+<span class="sd">    for cleanup actions during IOC shutdown.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sid</span> <span class="o">=</span> <span class="n">_dbapi</span><span class="o">.</span><span class="n">_hooks</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">slist</span> <span class="o">=</span> <span class="n">_dbapi</span><span class="o">.</span><span class="n">_hooktable</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">slist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_dbapi</span><span class="o">.</span><span class="n">_hooktable</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span> <span class="o">=</span> <span class="n">slist</span>
+
+    <span class="n">slist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="debugHooks"><a class="viewcode-back" href="../../devsup.html#devsup.hooks.debugHooks">[docs]</a><span class="k">def</span> <span class="nf">debugHooks</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Install debugging print to hooks</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hooknames</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_showstate</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">h</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Reached state&#39;</span><span class="p">,</span><span class="n">state</span><span class="p">)</span>
+        <span class="n">addHook</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">_showstate</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pyDevSup 0.1-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../devsup.html" >devsup</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Michael Davidsaver.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

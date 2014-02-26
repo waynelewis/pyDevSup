@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Support Modules &mdash; pyDevSup 0.2-dev documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyDevSup 0.2-dev documentation" href="index.html" />
+    <link rel="next" title="ptable Package" href="ptable.html" />
+    <link rel="prev" title="devsup Package" href="devsup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ptable.html" title="ptable Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="devsup.html" title="devsup Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="support-modules">
+<h1>Support Modules<a class="headerlink" href="#support-modules" title="Permalink to this headline">¶</a></h1>
+<p>An EPICS Record definition for most record types will
+include setting the DTYP and INP or OUT fields.
+An example with the longin would be:</p>
+<div class="highlight-python"><pre>record(longin, "instance:name") {
+  field(DTYP, "Python Device")
+  field(INP , "@pymodule some other string")
+}</pre>
+</div>
+<p>Or equivalently:</p>
+<div class="highlight-python"><pre>record(longin, "instance:name") {
+  field(DTYP, "Python Device")
+  field(INP , "@some other string")
+  info("pySupportMod", "pymodule")
+}</pre>
+</div>
+<p>This minimal example will attempt to import a Python
+module named &#8216;pymodule&#8217;.  This module is expected
+to provide a <a class="reference internal" href="#build" title="build"><tt class="xref py py-func docutils literal"><span class="pre">build()</span></tt></a> function.
+Which will be called with a <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance
+and the string &#8220;some other string&#8221;.</p>
+<div class="section" id="build-function">
+<h2><a class="reference internal" href="#build" title="build"><tt class="xref py py-func docutils literal"><span class="pre">build()</span></tt></a> Function<a class="headerlink" href="#build-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="build">
+<tt class="descname">build</tt><big>(</big><em>record</em>, <em>args</em><big>)</big><a class="headerlink" href="#build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the IOC requests a device support instance
+for the given record.  This function should return
+an object providing the methods of a
+<a class="reference internal" href="#DeviceSupport" title="DeviceSupport"><tt class="xref py py-class docutils literal"><span class="pre">DeviceSupport</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>record</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance to which this support
+will be attached.  May be used to introspect and
+query initial field values.</li>
+<li><strong>args</strong> &#8211; The remainder of the INP or OUT field string.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+  <span class="k">print</span> <span class="s">&#39;Need device support for&#39;</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+  <span class="k">print</span> <span class="s">&#39;Provided:&#39;</span><span class="p">,</span> <span class="n">args</span>
+  <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Not support found!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="devicesupport-interface">
+<h2><a class="reference internal" href="#DeviceSupport" title="DeviceSupport"><tt class="xref py py-class docutils literal"><span class="pre">DeviceSupport</span></tt></a> Interface<a class="headerlink" href="#devicesupport-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="DeviceSupport">
+<em class="property">class </em><tt class="descname">DeviceSupport</tt><a class="headerlink" href="#DeviceSupport" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">DeviceSupport</span></tt> is not a class.  Rather it is a description
+of the methods which all Python device support instances must provide.
+These methods will be called during the course of IOC processing.</p>
+<p>Execptions raised by these methods are printed to the IOC console,
+but will otherwise be ignored.</p>
+<p>The module <tt class="xref py py-mod docutils literal"><span class="pre">devsup.interfaces</span></tt> provides a Zope Interface
+definition by this name which may be referenced.</p>
+<dl class="attribute">
+<dt id="DeviceSupport.raw">
+<tt class="descname">raw</tt><a class="headerlink" href="#DeviceSupport.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean value indicating whether this device support
+uses &#8220;raw&#8221; access.  A Raw support module will update
+the VAL field even if the recordtype has an RVAL field
+(eg. ai/ao, mbbi/mbbo).</p>
+<p>Omitting this attribute is the same as False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DeviceSupport.process">
+<tt class="descname">process</tt><big>(</big><em>record</em>, <em>reason</em><big>)</big><a class="headerlink" href="#DeviceSupport.process" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</li>
+<li><strong>reason</strong> &#8211; <tt class="docutils literal"><span class="pre">None</span></tt> or an object provided when processing was requested.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This method is called whenever the associated record needs to be updated
+in responce to a request.  The source of this request is typically determined
+by the record&#8217;s SCAN field.</p>
+<p>The actions taken by this method will depend heavily on the application.
+Typically this will include reading or writing values from fields.
+Record fields can be access through the provided <tt class="docutils literal"><span class="pre">Record</span></tt> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DeviceSupport.detach">
+<tt class="descname">detach</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#DeviceSupport.detach" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</td>
+</tr>
+</tbody>
+</table>
+<p>Called when a device support instance is being dis-associated
+from its Record.  This will occur when the IOC is shutdown
+or the INP or OUT field of a record is modified.</p>
+<p>No further calls to this object will be made in relation
+to <em>record</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DeviceSupport.allowScan">
+<tt class="descname">allowScan</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#DeviceSupport.allowScan" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool or Callable</td>
+</tr>
+</tbody>
+</table>
+<p>Called when an attempt is made to set the record&#8217;s SCAN field
+to &#8220;I/O Intr&#8221; either at startup, or during runtime.
+To permit this the method must return an object which evaluates to <em>True</em>.
+If not then the attempt will fail and SCAN will revert to
+&#8220;Passive&#8221;.</p>
+<p>If a callable object is returned, then it will be invoked
+when SCAN is changed again, or just before <a class="reference internal" href="#DeviceSupport.detach" title="DeviceSupport.detach"><tt class="xref py py-meth docutils literal"><span class="pre">detach()</span></tt></a>
+is called.</p>
+<p>This method will typically be implemented using the
+<tt class="docutils literal"><span class="pre">add</span></tt> method of an I/O scan list object.
+(<tt class="xref py py-meth docutils literal"><span class="pre">IOScanListBlock</span></tt>
+or <tt class="xref py py-meth docutils literal"><span class="pre">IOScanListThread</span></tt>)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span> <span class="o">=</span> <span class="n">devsup</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">IOScanListThread</span><span class="p">()</span>
+  <span class="k">def</span> <span class="nf">allowScan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which is most cases can be abbriviated to</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span> <span class="o">=</span> <span class="n">devsup</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">IOScanListThread</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">allowScan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span><span class="o">.</span><span class="n">add</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>A simple counter.  The processing action is to increment the value
+of the VAL field.
+The following code should be placed in a file named <em>counter.py</em>
+which should be placed in the Python module import path.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySupport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">detach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="k">pass</span> <span class="c"># no cleanup needed</span>
+
+  <span class="k">def</span> <span class="nf">allowScan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">False</span> <span class="c"># I/O Intr not supported</span>
+
+  <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+    <span class="n">record</span><span class="o">.</span><span class="n">VAL</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">VAL</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">record</span><span class="o">.</span><span class="n">UDF</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+      <span class="k">pass</span> <span class="c"># not all record types implement this</span>
+
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> is not friendly.&#39;</span><span class="o">%</span><span class="n">record</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">MySupport</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This support code can then be referenced from records.</p>
+<div class="highlight-python"><pre>record(longin, "my:int:counter") {
+  field(DTYP, "Python Device")
+  field(INP , "@counter hello world")
+}</pre>
+</div>
+<p>The following will fail to associate.</p>
+<div class="highlight-python"><pre>record(longin, "my:int:counter") {
+  field(DTYP, "Python Device")
+  field(INP , "@counter do what I say")
+}</pre>
+</div>
+<p>If a shorter INP link string is necessary, or to prevent
+runtime switching of modules, the module name may also
+be given in the <em>pySupportMod</em> info() tag.</p>
+<div class="highlight-python"><pre>record(longin, "my:int:counter") {
+  field(DTYP, "Python Device")
+  field(INP , "@hello world")
+  info("pySupportMod", "counter")
+}</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Support Modules</a><ul>
+<li><a class="reference internal" href="#build-function"><tt class="docutils literal"><span class="pre">build()</span></tt> Function</a></li>
+<li><a class="reference internal" href="#devicesupport-interface"><tt class="docutils literal"><span class="pre">DeviceSupport</span></tt> Interface</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="devsup.html"
+                        title="previous chapter">devsup Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ptable.html"
+                        title="next chapter">ptable Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/interfaces.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ptable.html" title="ptable Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="devsup.html" title="devsup Package"
+             >previous</a> |</li>
+        <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Michael Davidsaver.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

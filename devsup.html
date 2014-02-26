@@ -1,0 +1,732 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devsup Package &mdash; pyDevSup 0.2-dev documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyDevSup 0.2-dev documentation" href="index.html" />
+    <link rel="next" title="Support Modules" href="interfaces.html" />
+    <link rel="prev" title="Runtime Environment" href="environment.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="interfaces.html" title="Support Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="environment.html" title="Runtime Environment"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-devsup">
+<span id="devsup-package"></span><h1>devsup Package<a class="headerlink" href="#module-devsup" title="Permalink to this headline">¶</a></h1>
+<dl class="data">
+<dt>
+<tt class="descname">NO_ALARM, MINOR_ALARM, MAJOR_ALARM, INVALID_ALARM</tt></dt>
+<dd><p>Constants for alarm severity.  Use with <tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descname">NO_ALARM, READ_ALARM, WRITE_ALARM, ...</tt></dt>
+<dd><p>Constants for alarm status.  Use with <tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></p>
+</dd></dl>
+
+<div class="section" id="module-devsup.db">
+<span id="db-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">db</span></tt> Module<a class="headerlink" href="#module-devsup.db" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="devsup.db.getRecord">
+<tt class="descclassname">devsup.db.</tt><tt class="descname">getRecord</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#devsup.db.getRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance by the
+full record name.</p>
+<p>The result is cached so the future calls will return the same instance.
+This is the prefered way to get <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instances.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
+<span class="go">Record(&quot;my:record:name&quot;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="section" id="record-class">
+<h3><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> Class<a class="headerlink" href="#record-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devsup.db.devsup.db.Record">
+<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">Record</tt><a class="headerlink" href="#devsup.db.devsup.db.Record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows access to a single record instance.
+<em>Record</em> instances can be created for any record in
+the process database.  However, some features will only
+function when the record has Python device support.</p>
+<p><em>Record</em> objects allow access to fields through the
+<tt class="xref py py-meth docutils literal"><span class="pre">field()</span></tt> method and direct access to field
+values through attributes.</p>
+<p>Attribute access is currently limited to scalar fields.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s">&#39;VAL&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F</span><span class="o">.</span><span class="n">getval</span><span class="p">()</span>
+<span class="go">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">VAL</span>
+<span class="go">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">VAL</span> <span class="o">=</span> <span class="mi">43</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.name">
+<tt class="descclassname">Record.</tt><tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record name string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<span class="go">&quot;my:record:name&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.rtype">
+<tt class="descclassname">Record.</tt><tt class="descname">rtype</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.rtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Record type name string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
+<span class="go">&quot;longin&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.field">
+<tt class="descclassname">Record.</tt><tt class="descname">field</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lookup field in this record</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#devsup.db.Field" title="devsup.db.Field"><tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body">KeyError for non-existant fields.</td>
+</tr>
+</tbody>
+</table>
+<p>The returned object is cached so future calls will
+return the same instance.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;rec&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s">&#39;HOPR&#39;</span><span class="p">)</span>
+<span class="go">Field(&quot;rec.HOPR&quot;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.setSevr">
+<tt class="descclassname">Record.</tt><tt class="descname">setSevr</tt><big>(</big><em>sevr=INVALID_ALARM</em>, <em>stat=COMM_ALARM</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.setSevr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal a new alarm condition.  The effect of this
+call depends on the current alarm condition.</p>
+<p>See <tt class="xref c c-func docutils literal"><span class="pre">recGblSetSevr()</span></tt> in EPICS Base.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.setTime">
+<tt class="descclassname">Record.</tt><tt class="descname">setTime</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.setTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set record timestamp.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> &#8211; datetime, float, or (sec, nsec).</td>
+</tr>
+</tbody>
+</table>
+<p>Has not effect if the TSE field is not set to -2.
+All inputs must be referenced to the posix epoch.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.scan">
+<tt class="descclassname">Record.</tt><tt class="descname">scan</tt><big>(</big><em>sync=False</em>, <em>reason=None</em>, <em>force=0</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan this record.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sync</strong> &#8211; scan in current thread (<tt class="docutils literal"><span class="pre">True</span></tt>), or queue (<tt class="docutils literal"><span class="pre">False</span></tt>).</li>
+<li><strong>reason</strong> &#8211; Reason object passed to <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> (sync=True only)</li>
+<li><strong>force</strong> &#8211; Record processing condtion (0=Passive, 1=Force, 2=I/O Intr)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">RuntimeError</span></tt> when <tt class="docutils literal"><span class="pre">sync=True</span></tt>, but <tt class="docutils literal"><span class="pre">force</span></tt> prevents scanning.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If <tt class="docutils literal"><span class="pre">sync</span></tt> is False then a
+scan request is queued to run in another thread..
+If <tt class="docutils literal"><span class="pre">sync</span></tt> is True then the record
+is scannined immidately on the current thread.</p>
+<p>For <tt class="docutils literal"><span class="pre">reason</span></tt> argument must be used in conjunction with <tt class="docutils literal"><span class="pre">sync=True</span></tt>
+on records with Python device support.  This provides a means
+of providing extra contextual information to the record&#8217;s
+<a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> method.</p>
+<p><tt class="docutils literal"><span class="pre">force</span></tt> is used to decide if the record will actuall be processed,
+<tt class="docutils literal"><span class="pre">force=0</span></tt> will only process records with SCAN=Passive.
+<tt class="docutils literal"><span class="pre">force=1</span></tt> will process any record if at all possible.
+<tt class="docutils literal"><span class="pre">force=2</span></tt> will only process records with Python device support and
+SCAN=I/O Intr.</p>
+<p>It is <strong>never</strong> safe to use <tt class="docutils literal"><span class="pre">sync=True</span></tt> while holding record locks,
+including from within a <em>process</em> method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.asyncStart">
+<tt class="descclassname">Record.</tt><tt class="descname">asyncStart</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.asyncStart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start asynchronous processing</p>
+<p>This method may be called from a device support
+<a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> method
+to indicate that processing will continue
+later.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This method is <strong>only</strong> safe to call within a <em>process</em> method.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.asyncFinish">
+<tt class="descclassname">Record.</tt><tt class="descname">asyncFinish</tt><big>(</big><em>reason=None</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.asyncFinish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicate that asynchronous processing can complete</p>
+<p>Similar to <tt class="xref py py-meth docutils literal"><span class="pre">scan()</span></tt>.  Used to conclude asynchronous
+process started with <tt class="xref py py-meth docutils literal"><span class="pre">asyncStart()</span></tt>.</p>
+<p>Processing is completed on the current thread.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This method should <strong>never</strong> be called within
+a <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> method,
+or any other context where a Record lock is held.
+Doing so will result in a deadlock.</p>
+</div>
+<p>Typically a <em>reason</em> will be passed to <em>process</em> as a way
+of indicating that this is the completion of an async action.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">AsyncDone</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">reason</span> <span class="ow">is</span> <span class="n">AsyncDone</span><span class="p">:</span>
+      <span class="n">record</span><span class="o">.</span><span class="n">VAL</span> <span class="o">=</span> <span class="o">...</span> <span class="c"># store result</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">record</span><span class="o">.</span><span class="n">asyncFinish</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;reason&#39;</span><span class="p">:</span><span class="n">AsyncDone</span><span class="p">})</span>
+      <span class="n">record</span><span class="o">.</span><span class="n">asyncStart</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.info">
+<tt class="descclassname">Record.</tt><tt class="descname">info</tt><big>(</big><em>key</em><span class="optional">[</span>, <em>default</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body">KeyError</td>
+</tr>
+</tbody>
+</table>
+<p>Lookup record info tag.  If no default
+is provided then an exception is raised
+if the info key does not exist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.devsup.db.Record.Record.infos">
+<tt class="descclassname">Record.</tt><tt class="descname">infos</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.infos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary of all info tags
+for this record</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="field-class">
+<h3><a class="reference internal" href="#devsup.db.Field" title="devsup.db.Field"><tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt></a> Class<a class="headerlink" href="#field-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="devsup.db.Field">
+<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">Field</tt><big>(</big><em>fld</em><big>)</big><a class="headerlink" href="#devsup.db.Field" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="devsup.db.Field.name">
+<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the record and field names.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">FLD</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;rec&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s">&quot;FLD&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FLD</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+<span class="go">(&quot;rec&quot;, &quot;FLD&quot;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="devsup.db.Field.record">
+<tt class="descname">record</tt><a class="headerlink" href="#devsup.db.Field.record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> associated with this field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.getval">
+<tt class="descname">getval</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch the current field value as a scalar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int, float, or str</td>
+</tr>
+</tbody>
+</table>
+<p>Returned type depends of field DBF type.
+An <tt class="docutils literal"><span class="pre">int</span></tt> is returned for CHAR, SHORT, LONG, and ENUM.
+A <tt class="docutils literal"><span class="pre">float</span></tt> is returned for FLOAT and DOUBLE.
+A <tt class="docutils literal"><span class="pre">str</span></tt> is returned for STRING.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.putval">
+<tt class="descname">putval</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#devsup.db.Field.putval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the field value</p>
+<p>Must be an Int, Float or str.  Strings will be truncated to 39 charactors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.getarray">
+<tt class="descname">getarray</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a numpy ndarray refering to this field for in-place operations.</p>
+<p>The dtype of the ndarray will correspond to the field&#8217;s DBF type.
+Its size will be the <strong>maximum</strong> number of elements.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">It is only safe to read or write to this ndarray while the record
+lock is held (ie withing <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a>).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.fieldinfo">
+<tt class="descname">fieldinfo</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.fieldinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>(type, size, #elements) = fieldinfo()</p>
+<p>Type is DBF type code
+size is number of bytes to start a single element
+#elements is the maximum number of elements the field can hold</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.getTime">
+<tt class="descname">getTime</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get timestamp of link target.</p>
+<p>Only works for DBF_INLINK fields.
+Returns the time in seconds since the posix epoch.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.getAlarm">
+<tt class="descname">getAlarm</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getAlarm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple (severity, status) with the condtion of the linked field.</p>
+<p>Only works for fields of type DBF_INLINK.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devsup.db.IOScanListBlock">
+<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">IOScanListBlock</tt><a class="headerlink" href="#devsup.db.IOScanListBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of records which will be processed together.</p>
+<p>This convienence class to handle the accounting to
+maintain a list of records.</p>
+<dl class="method">
+<dt id="devsup.db.IOScanListBlock.add">
+<tt class="descname">add</tt><big>(</big><em>rec</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListBlock.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the scan list.</p>
+<p>This method is designed to be consistent
+with <a class="reference internal" href="interfaces.html#DeviceSupport.allowScan" title="DeviceSupport.allowScan"><tt class="xref py py-meth docutils literal"><span class="pre">allowScan</span></tt></a>
+by returning its <a class="reference internal" href="#devsup.db.IOScanListBlock.remove" title="devsup.db.IOScanListBlock.remove"><tt class="xref py py-meth docutils literal"><span class="pre">remove()</span></tt></a> method.
+If fact this function can be completely delegated.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyDriver</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">StoppableThread</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">MyDriver</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scan1</span> <span class="o">=</span> <span class="n">IOScanListBlock</span><span class="p">()</span>
+  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">shouldRun</span><span class="p">():</span>
+      <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan1</span><span class="o">.</span><span class="n">interrupt</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
+  <span class="k">def</span> <span class="nf">allowScan</span><span class="p">(</span><span class="n">rec</span><span class="p">):</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">scan1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.IOScanListBlock.interrupt">
+<tt class="descname">interrupt</tt><big>(</big><em>reason=None</em>, <em>mask=None</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListBlock.interrupt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan the records in this list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>reason</strong> &#8211; Passed to <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt>.</li>
+<li><strong>mask</strong> &#8211; A <em>list</em> or <em>set</em> or records which should not be scanned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This method will call <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt> of each of the records
+currently in the list.  This is done synchronously in the current
+thread.  It should <strong>never</strong> be call when any record locks are held.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.IOScanListBlock.remove">
+<tt class="descname">remove</tt><big>(</big><em>rec</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListBlock.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the scan list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devsup.db.IOScanListThread">
+<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">IOScanListThread</tt><a class="headerlink" href="#devsup.db.IOScanListThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of records w/ a worker thread to run them.</p>
+<p>All methods are thread-safe.</p>
+<dl class="method">
+<dt id="devsup.db.IOScanListThread.add">
+<tt class="descname">add</tt><big>(</big><em>rec</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListThread.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the scan list.</p>
+<p>This method is thread-safe and may be used
+without additional locking.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyDriver</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">StoppableThread</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">MyDriver</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scan1</span> <span class="o">=</span> <span class="n">IOScanListThread</span><span class="p">()</span>
+  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">shouldRun</span><span class="p">():</span>
+      <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">scan1</span><span class="o">.</span><span class="n">interrupt</span><span class="p">()</span>
+      
+<span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">allowScan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">scan1</span><span class="o">.</span><span class="n">add</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.IOScanListThread.interrupt">
+<tt class="descname">interrupt</tt><big>(</big><em>reason=None</em>, <em>mask=None</em>, <em>whendone=&lt;function _default_whendone at 0xa911f7c&gt;</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListThread.interrupt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queue a request to process the scan list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>reason</strong> &#8211; Passed to <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt>.</li>
+<li><strong>mask</strong> &#8211; A <em>list</em> or <em>set</em> or records which should not be scanned.</li>
+<li><strong>whendone</strong> &#8211; A callable which will be invoked after all records are processed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True is the request was queued, and False if the queue was full.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Throws :</th><td class="field-body"><p class="first last">RuntimeError is the request can&#8217;t be queued.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Calling this method will cause a request to be sent to a
+worker thread.  This method can be called several times
+to queue several requests.</p>
+<p>If provided, the <em>whendone</em> callable is invoked with three arguments.
+These will be None except in the case an interrupt is raised in the
+worker in which case they are: exception type, value, and traceback.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method may be safely called while record locks are held.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-devsup.hooks">
+<span id="hooks-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">hooks</span></tt> Module<a class="headerlink" href="#module-devsup.hooks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="devsup.hooks.addHook">
+<tt class="descclassname">devsup.hooks.</tt><tt class="descname">addHook</tt><big>(</big><em>&quot;stats&quot;</em>, <em>funcion</em><big>)</big><a class="headerlink" href="#devsup.hooks.addHook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add callable to IOC start sequence.</p>
+<p>Callables are run in the order in
+which they were added (except for &#8216;AtIocExit&#8217;).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">show</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&#39;State Occurred&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">addHook</span><span class="p">(</span><span class="s">&quot;AfterIocRunning&quot;</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An additional special hook &#8216;AtIocExit&#8217; may be used
+for cleanup actions during IOC shutdown.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="devsup.hooks.debugHooks">
+<tt class="descclassname">devsup.hooks.</tt><tt class="descname">debugHooks</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.hooks.debugHooks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install debugging print to hooks</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-devsup.util">
+<span id="util-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt> Module<a class="headerlink" href="#module-devsup.util" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="devsup.util.StoppableThread">
+<em class="property">class </em><tt class="descclassname">devsup.util.</tt><tt class="descname">StoppableThread</tt><big>(</big><em>max=0</em><big>)</big><a class="headerlink" href="#devsup.util.StoppableThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt></p>
+<p>A thread which can be requested to stop.</p>
+<p>The thread run() method should periodically call the shouldRun()
+method and return if this yields False.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestThread</span><span class="p">(</span><span class="n">StoppableThread</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">(</span><span class="n">TestThread</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="kn">import</span> <span class="nn">time</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">shouldRun</span><span class="p">():</span>
+<span class="gp">... </span>            <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">TestThread</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">E</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">cur</span> <span class="ow">is</span> <span class="n">T</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="devsup.util.StoppableThread.join">
+<tt class="descname">join</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.util.StoppableThread.join" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.StoppableThread.shouldRun">
+<tt class="descname">shouldRun</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.util.StoppableThread.shouldRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns False is a request to stop is made.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.StoppableThread.sleep">
+<tt class="descname">sleep</tt><big>(</big><em>delay</em><big>)</big><a class="headerlink" href="#devsup.util.StoppableThread.sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sleep for some time, or until a request to stop is made.
+Return value is the same as shouldRun()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.StoppableThread.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.util.StoppableThread.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="devsup.util.Worker">
+<em class="property">class </em><tt class="descclassname">devsup.util.</tt><tt class="descname">Worker</tt><big>(</big><em>max=0</em><big>)</big><a class="headerlink" href="#devsup.util.Worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt></p>
+<p>A threaded work queue.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="devsup.util.Worker.StopWorker">
+<tt class="descname">StopWorker</tt><em class="property"> = &lt;object object at 0xa8443f0&gt;</em><a class="headerlink" href="#devsup.util.Worker.StopWorker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.Worker.add">
+<tt class="descname">add</tt><big>(</big><em>func</em>, <em>args=()</em>, <em>kws={}</em>, <em>block=True</em><big>)</big><a class="headerlink" href="#devsup.util.Worker.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to send a job to the worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the job was queued. False if the queue is full,
+or has been joined.</td>
+</tr>
+</tbody>
+</table>
+<p>When <tt class="docutils literal"><span class="pre">block=True</span></tt> then this method will only return
+False if the Worker has been joined.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.Worker.join">
+<tt class="descname">join</tt><big>(</big><em>flush=True</em><big>)</big><a class="headerlink" href="#devsup.util.Worker.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop accepting new jobs and join the worker thread</p>
+<p>Blocks until currently queued work is complete.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.util.Worker.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.util.Worker.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="devsup.util.importmod">
+<tt class="descclassname">devsup.util.</tt><tt class="descname">importmod</tt><big>(</big><em>modname</em><big>)</big><a class="headerlink" href="#devsup.util.importmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import the named python module(s)
+add return the leaf.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span><span class="o">=</span><span class="n">importmod</span><span class="p">(</span><span class="s">&#39;xml.sax&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M</span><span class="o">.</span><span class="n">__name__</span>
+<span class="go">&#39;xml.sax&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">devsup Package</a><ul>
+<li><a class="reference internal" href="#module-devsup.db"><tt class="docutils literal"><span class="pre">db</span></tt> Module</a><ul>
+<li><a class="reference internal" href="#record-class"><tt class="docutils literal"><span class="pre">Record</span></tt> Class</a></li>
+<li><a class="reference internal" href="#field-class"><tt class="docutils literal"><span class="pre">Field</span></tt> Class</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-devsup.hooks"><tt class="docutils literal"><span class="pre">hooks</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-devsup.util"><tt class="docutils literal"><span class="pre">util</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="environment.html"
+                        title="previous chapter">Runtime Environment</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="interfaces.html"
+                        title="next chapter">Support Modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/devsup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="interfaces.html" title="Support Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="environment.html" title="Runtime Environment"
+             >previous</a> |</li>
+        <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Michael Davidsaver.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

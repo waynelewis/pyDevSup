@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>devsup.db &mdash; pyDevSup 0.1-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pyDevSup 0.1-dev documentation" href="../../index.html" />
+    <link rel="up" title="devsup" href="../devsup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pyDevSup 0.1-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../devsup.html" accesskey="U">devsup</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for devsup.db</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">traceback</span>
+
+<span class="kn">from</span> <span class="nn">devsup.util</span> <span class="kn">import</span> <span class="n">Worker</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">_dbapi</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">_nullapi</span> <span class="kn">as</span> <span class="nn">_dbapi</span>
+
+<span class="n">_rec_cache</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_no_such_field</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;Record&#39;</span><span class="p">,</span> <span class="s">&#39;getRecord&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Field&#39;</span><span class="p">,</span>
+    <span class="s">&#39;IOScanListBlock&#39;</span><span class="p">,</span>
+    <span class="s">&#39;IOScanListThread&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">getRecord</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="getRecord"><a class="viewcode-back" href="../../devsup.html#devsup.db.getRecord">[docs]</a>    <span class="sd">&quot;&quot;&quot;Retrieve a :class:`Record` instance by the</span>
+<span class="sd">    full record name.</span>
+<span class="sd">    </span>
+<span class="sd">    The result is cached so the future calls will return the same instance.</span>
+<span class="sd">    This is the prefered way to get :class:`Record` instances.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; R = getRecord(&quot;my:record:name&quot;)</span>
+<span class="sd">    Record(&quot;my:record:name&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_rec_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">rec</span> <span class="o">=</span> <span class="n">Record</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">_rec_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec</span>
+        <span class="k">return</span> <span class="n">rec</span>
+
+<span class="k">class</span> <span class="nc">IOScanListBlock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div>
+<div class="viewcode-block" id="IOScanListBlock"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListBlock">[docs]</a>    <span class="sd">&quot;&quot;&quot;A list of records which will be processed together.</span>
+<span class="sd">    </span>
+<span class="sd">    This convienence class to handle the accounting to</span>
+<span class="sd">    maintain a list of records.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IOScanListBlock</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="nb">set</span><span class="p">(),</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">):</span>
+<div class="viewcode-block" id="IOScanListBlock.add"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListBlock.add">[docs]</a>        <span class="sd">&quot;&quot;&quot;Add a record to the scan list.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is designed to be consistent</span>
+<span class="sd">        with :meth:`allowScan &lt;DeviceSupport.allowScan&gt;`</span>
+<span class="sd">        by returning its :meth:`remove` method.</span>
+<span class="sd">        If fact this function can be completely delegated. ::</span>
+<span class="sd">        </span>
+<span class="sd">          class MyDriver(util.StoppableThread):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">              super(MyDriver,self).__init__()</span>
+<span class="sd">              self.lock = threading.Lock()</span>
+<span class="sd">              self.scan1 = IOScanListBlock()</span>
+<span class="sd">            def run(self):</span>
+<span class="sd">              while self.shouldRun():</span>
+<span class="sd">                time.sleep(1)</span>
+<span class="sd">                with self.lock:</span>
+<span class="sd">                  self.scan1.interrupt()</span>
+<span class="sd">  </span>
+<span class="sd">          class MySup(object):</span>
+<span class="sd">            def __init__(self, driver):</span>
+<span class="sd">              self.driver = driver</span>
+<span class="sd">            def allowScan(rec):</span>
+<span class="sd">              with self.driver.lock:</span>
+<span class="sd">                return self.driver.scan1.add(rec)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">Record</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">):</span></div>
+<div class="viewcode-block" id="IOScanListBlock.remove"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListBlock.remove">[docs]</a>        <span class="sd">&quot;&quot;&quot;Remove a record from the scan list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="o">.</span><span class="n">_recs_remove</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">interrupt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="IOScanListBlock.interrupt"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListBlock.interrupt">[docs]</a>        <span class="sd">&quot;&quot;&quot;Scan the records in this list.</span>
+
+<span class="sd">        :param reason: Passed to :meth:`Record.scan`.</span>
+<span class="sd">        :param mask: A *list* or *set* or records which should not be scanned.</span>
+
+<span class="sd">        This method will call :meth:`Record.scan` of each of the records</span>
+<span class="sd">        currently in the list.  This is done synchronously in the current</span>
+<span class="sd">        thread.  It should **never** be call when any record locks are held.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">R</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mask</span> <span class="ow">and</span> <span class="n">R</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">R</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="o">.</span><span class="n">interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span><span class="p">))</span><span class="o">==</span><span class="mi">0</span>
+            
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recs_add</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recs</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recs_remove</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            
+
+<span class="k">def</span> <span class="nf">_default_whendone</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span></div></div>
+    <span class="k">if</span> <span class="nb">type</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">or</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">IOScanListThread</span><span class="p">(</span><span class="n">IOScanListBlock</span><span class="p">):</span>
+<div class="viewcode-block" id="IOScanListThread"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListThread">[docs]</a>    <span class="sd">&quot;&quot;&quot;A list of records w/ a worker thread to run them.</span>
+<span class="sd">    </span>
+<span class="sd">    All methods are thread-safe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_worker</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_worker_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="n">queuelength</span><span class="o">=</span><span class="mi">100</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getworker</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">cls</span><span class="o">.</span><span class="n">_worker_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_worker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_worker</span>
+            <span class="kn">import</span> <span class="nn">devsup.hooks</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="nb">max</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">queuelength</span><span class="p">)</span>
+            <span class="n">devsup</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">addHook</span><span class="p">(</span><span class="s">&#39;AtIocExit&#39;</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_worker</span> <span class="o">=</span> <span class="n">T</span>
+            <span class="k">return</span> <span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IOScanListThread</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">):</span>
+<div class="viewcode-block" id="IOScanListThread.add"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListThread.add">[docs]</a>        <span class="sd">&quot;&quot;&quot;Add a record to the scan list.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is thread-safe and may be used</span>
+<span class="sd">        without additional locking. ::</span>
+<span class="sd">        </span>
+<span class="sd">          class MyDriver(util.StoppableThread):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">              super(MyDriver,self).__init__()</span>
+<span class="sd">              self.scan1 = IOScanListThread()</span>
+<span class="sd">            def run(self):</span>
+<span class="sd">              while self.shouldRun():</span>
+<span class="sd">                time.sleep(1)</span>
+<span class="sd">                self.scan1.interrupt()</span>
+<span class="sd">                </span>
+<span class="sd">          class MySup(object):</span>
+<span class="sd">            def __init__(self, driver):</span>
+<span class="sd">              self.driver = driver</span>
+<span class="sd">              self.allowScan = self.driver.scan1.add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">IOScanListThread</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">):</span></div>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">IOScanListThread</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">interrupt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">whendone</span><span class="o">=</span><span class="n">_default_whendone</span><span class="p">):</span>
+<div class="viewcode-block" id="IOScanListThread.interrupt"><a class="viewcode-back" href="../../devsup.html#devsup.db.IOScanListThread.interrupt">[docs]</a>        <span class="sd">&quot;&quot;&quot;Queue a request to process the scan list.</span>
+
+<span class="sd">        :param reason: Passed to :meth:`Record.scan`.</span>
+<span class="sd">        :param mask: A *list* or *set* or records which should not be scanned.</span>
+<span class="sd">        :param whendone: A callable which will be invoked after all records are processed.</span>
+<span class="sd">        :throws: RuntimeError is the request can&#39;t be queued.</span>
+
+<span class="sd">        Calling this method will cause a request to be sent to a</span>
+<span class="sd">        worker thread.  This method can be called several times</span>
+<span class="sd">        to queue several requests.</span>
+<span class="sd">        </span>
+<span class="sd">        If provided, the *whendone* callable is invoked with three arguments.</span>
+<span class="sd">        These will be None except in the case an interrupt is raised in the</span>
+<span class="sd">        worker in which case they are: exception type, value, and traceback.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">          This method may be safely called while record locks are held.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getworker</span><span class="p">()</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_X</span><span class="p">,</span> <span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">whendone</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">whendone</span><span class="p">):</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c">#print &#39;XXXXX&#39;,self</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">IOScanListThread</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">interrupt</span><span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c">#print &#39;YYYYY&#39;,self,sys.exc_info()</span>
+            <span class="n">whendone</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+
+<span class="k">class</span> <span class="nc">Record</span><span class="p">(</span><span class="n">_dbapi</span><span class="o">.</span><span class="n">_Record</span><span class="p">):</span></div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Record</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Record</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="s">&#39;_fld_cache&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lookup field in this record</span>
+<span class="sd">        </span>
+<span class="sd">        :rtype: :class:`Field`</span>
+<span class="sd">        :throws: KeyError for non-existant fields.</span>
+<span class="sd">        </span>
+<span class="sd">        The returned object is cached so future calls will</span>
+<span class="sd">        return the same instance.</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; getRecord(&quot;rec&quot;).field(&#39;HOPR&#39;)</span>
+<span class="sd">        Field(&quot;rec.HOPR&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fld_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">F</span> <span class="ow">is</span> <span class="n">_no_such_field</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">F</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fld</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fld_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_no_such_field</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fld_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fld</span>
+                <span class="k">return</span> <span class="n">fld</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&#39;No such field&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">getval</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">F</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Record</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">F</span><span class="o">.</span><span class="n">putval</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;Record(&quot;</span><span class="si">%s</span><span class="s">&quot;)&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">Field</span><span class="p">(</span><span class="n">_dbapi</span><span class="o">.</span><span class="n">_Field</span><span class="p">):</span>
+<div class="viewcode-block" id="Field"><a class="viewcode-back" href="../../devsup.html#devsup.db.Field">[docs]</a>    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.record"><a class="viewcode-back" href="../../devsup.html#devsup.db.Field.record">[docs]</a>        <span class="sd">&quot;&quot;&quot;Fetch the :class:`Record` associated with this field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record</span>
+
+    <span class="k">def</span> <span class="nf">__cmp__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">Field</span><span class="p">):</span>
+            <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="o">.</span><span class="n">getval</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getval</span><span class="p">(),</span> <span class="n">B</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getval</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">__long__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">long</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getval</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">__float__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getval</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;Field(&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;)&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">processLink</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lstr</span><span class="p">):</span></div>
+    <span class="sd">&quot;&quot;&quot;Process the INP or OUT link</span>
+<span class="sd">    </span>
+<span class="sd">    Expects lstr to be &quot;module arg1 arg2&quot;</span>
+
+<span class="sd">    Returns (callable, Record, &quot;arg1 arg2&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rec</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">lstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">modname</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="bp">None</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rec</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pyDevSup 0.1-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../devsup.html" >devsup</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Michael Davidsaver.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
