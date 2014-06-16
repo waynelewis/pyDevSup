@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyDevSup 0.2-dev documentation" href="index.html" />
     <link rel="next" title="devsup Package" href="devsup.html" />
-    <link rel="prev" title="pydevsup documentation" href="index.html" /> 
+    <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,7 +43,7 @@
           <a href="devsup.html" title="devsup Package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="pydevsup documentation"
+          <a href="gettingstarted.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
       </ul>
@@ -79,9 +79,10 @@ pyfile("myinit.py")</pre>
 <h2>PYTHONPATH<a class="headerlink" href="#pythonpath" title="Permalink to this headline">¶</a></h2>
 <p>The interpreter search path is automatically prefixed with the following additional paths:</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">$(EPICS_BASE)/python&lt;PY_VER&gt;/$(EPICS_ARCH)</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">$(PYDEV_BASE)/python&lt;PY_VER&gt;/$(EPICS_ARCH)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">${PWD}</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">$(TOP)/python&lt;PY_VER&gt;/$(EPICS_ARCH)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">$(PYDEV_BASE)/python&lt;PY_VER&gt;/$(EPICS_ARCH)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">$(EPICS_BASE)/python&lt;PY_VER&gt;/$(EPICS_ARCH)</span></tt></li>
 </ul>
 <p>The environment variables <tt class="docutils literal"><span class="pre">EPICS_BASE</span></tt>, <tt class="docutils literal"><span class="pre">PYDEV_BASE</span></tt>, <tt class="docutils literal"><span class="pre">TOP</span></tt>, and <tt class="docutils literal"><span class="pre">EPICS_ARCH</span></tt>
 will be used if set.  Compile time defaults are selected for
@@ -109,8 +110,8 @@ include $(PYDEVSUP)/configure/CONFIG_PY
 include $(TOP)/configure/RULES
 include $(PYDEVSUP)/configure/RULES_PY</pre>
 </div>
-<p>This will add or ammend several make variables.  The <tt class="docutils literal"><span class="pre">USR_*FLAGS</span></tt> variables
-may be extended with approprate flags for building python modules.  The <tt class="docutils literal"><span class="pre">PY_VER</span></tt>
+<p>This will add or amend several make variables.  The <tt class="docutils literal"><span class="pre">USR_*FLAGS</span></tt> variables
+may be extended with appropriate flags for building python modules.  The <tt class="docutils literal"><span class="pre">PY_VER</span></tt>
 variable is defined with the Python version number found in install directories (eg &#8220;2.7&#8221;).
 The <tt class="docutils literal"><span class="pre">PY_LD_VER</span></tt> variable is defined with the python library version number (eg &#8220;3.2mu&#8221;),
 which may be the same as <tt class="docutils literal"><span class="pre">PY_VER</span></tt>.</p>
@@ -138,7 +139,7 @@ myioc_LIBS += pyDevSup$(PY_LD_VER)</pre>
 </div>
 <div class="section" id="building-extensions">
 <h2>Building extensions<a class="headerlink" href="#building-extensions" title="Permalink to this headline">¶</a></h2>
-<p>For convienance, additional Python extensions can be build by the EPICS
+<p>For convenience, additional Python extensions can be build by the EPICS
 build system.  In this example the extension name is &#8220;_myextname&#8221; and
 the resulting library is expected to provide the an initialization function
 named &#8220;init_myextname&#8221;.</p>
@@ -189,8 +190,8 @@ has a name other than <tt class="docutils literal"><span class="pre">python$(PY_
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">pydevsup documentation</a></p>
+  <p class="topless"><a href="gettingstarted.html"
+                        title="previous chapter">Getting Started</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="devsup.html"
                         title="next chapter">devsup Package</a></p>
@@ -229,7 +230,7 @@ has a name other than <tt class="docutils literal"><span class="pre">python$(PY_
           <a href="devsup.html" title="devsup Package"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="pydevsup documentation"
+          <a href="gettingstarted.html" title="Getting Started"
              >previous</a> |</li>
         <li><a href="index.html">pyDevSup 0.2-dev documentation</a> &raquo;</li> 
       </ul>

@@ -74,7 +74,7 @@ An example with the longin would be:</p>
 <p>This minimal example will attempt to import a Python
 module named &#8216;pymodule&#8217;.  This module is expected
 to provide a <a class="reference internal" href="#build" title="build"><tt class="xref py py-func docutils literal"><span class="pre">build()</span></tt></a> function.
-Which will be called with a <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance
+Which will be called with a <a class="reference internal" href="devsup.html#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> instance
 and the string &#8220;some other string&#8221;.</p>
 <div class="section" id="build-function">
 <h2><a class="reference internal" href="#build" title="build"><tt class="xref py py-func docutils literal"><span class="pre">build()</span></tt></a> Function<a class="headerlink" href="#build-function" title="Permalink to this headline">¶</a></h2>
@@ -90,7 +90,7 @@ an object providing the methods of a
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>record</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance to which this support
+<li><strong>record</strong> &#8211; The <a class="reference internal" href="devsup.html#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> instance to which this support
 will be attached.  May be used to introspect and
 query initial field values.</li>
 <li><strong>args</strong> &#8211; The remainder of the INP or OUT field string.</li>
@@ -116,7 +116,7 @@ query initial field values.</li>
 <dd><p><tt class="docutils literal"><span class="pre">DeviceSupport</span></tt> is not a class.  Rather it is a description
 of the methods which all Python device support instances must provide.
 These methods will be called during the course of IOC processing.</p>
-<p>Execptions raised by these methods are printed to the IOC console,
+<p>Exceptions raised by these methods are printed to the IOC console,
 but will otherwise be ignored.</p>
 <p>The module <tt class="xref py py-mod docutils literal"><span class="pre">devsup.interfaces</span></tt> provides a Zope Interface
 definition by this name which may be referenced.</p>
@@ -138,7 +138,7 @@ the VAL field even if the recordtype has an RVAL field
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</li>
+<li><strong>record</strong> &#8211; <a class="reference internal" href="devsup.html#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> from which the request originated.</li>
 <li><strong>reason</strong> &#8211; <tt class="docutils literal"><span class="pre">None</span></tt> or an object provided when processing was requested.</li>
 </ul>
 </td>
@@ -146,7 +146,7 @@ the VAL field even if the recordtype has an RVAL field
 </tbody>
 </table>
 <p>This method is called whenever the associated record needs to be updated
-in responce to a request.  The source of this request is typically determined
+in response to a request.  The source of this request is typically determined
 by the record&#8217;s SCAN field.</p>
 <p>The actions taken by this method will depend heavily on the application.
 Typically this will include reading or writing values from fields.
@@ -160,7 +160,7 @@ Record fields can be access through the provided <tt class="docutils literal"><s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <a class="reference internal" href="devsup.html#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> from which the request originated.</td>
 </tr>
 </tbody>
 </table>
@@ -178,7 +178,7 @@ to <em>record</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> from which the request originated.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> &#8211; <a class="reference internal" href="devsup.html#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> from which the request originated.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool or Callable</td>
 </tr>
@@ -194,8 +194,8 @@ when SCAN is changed again, or just before <a class="reference internal" href="#
 is called.</p>
 <p>This method will typically be implemented using the
 <tt class="docutils literal"><span class="pre">add</span></tt> method of an I/O scan list object.
-(<tt class="xref py py-meth docutils literal"><span class="pre">IOScanListBlock</span></tt>
-or <tt class="xref py py-meth docutils literal"><span class="pre">IOScanListThread</span></tt>)</p>
+(<a class="reference internal" href="devsup.html#devsup.db.IOScanListBlock.add" title="devsup.db.IOScanListBlock.add"><tt class="xref py py-meth docutils literal"><span class="pre">IOScanListBlock</span></tt></a>
+or <a class="reference internal" href="devsup.html#devsup.db.IOScanListThread.add" title="devsup.db.IOScanListThread.add"><tt class="xref py py-meth docutils literal"><span class="pre">IOScanListThread</span></tt></a>)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span> <span class="o">=</span> <span class="n">devsup</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">IOScanListThread</span><span class="p">()</span>
@@ -203,7 +203,7 @@ or <tt class="xref py py-meth docutils literal"><span class="pre">IOScanListThre
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Which is most cases can be abbriviated to</p>
+<p>Which in most cases can be abbriviated to</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">a_scan</span> <span class="o">=</span> <span class="n">devsup</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">IOScanListThread</span><span class="p">()</span>

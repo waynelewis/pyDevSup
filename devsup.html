@@ -59,13 +59,13 @@
 <dl class="data">
 <dt>
 <tt class="descname">NO_ALARM, MINOR_ALARM, MAJOR_ALARM, INVALID_ALARM</tt></dt>
-<dd><p>Constants for alarm severity.  Use with <tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></p>
+<dd><p>Constants for alarm severity.  Use with <a class="reference internal" href="#devsup.db.Record.setSevr" title="devsup.db.Record.setSevr"><tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></a></p>
 </dd></dl>
 
 <dl class="data">
 <dt>
 <tt class="descname">NO_ALARM, READ_ALARM, WRITE_ALARM, ...</tt></dt>
-<dd><p>Constants for alarm status.  Use with <tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></p>
+<dd><p>Constants for alarm status.  Use with <a class="reference internal" href="#devsup.db.Record.setSevr" title="devsup.db.Record.setSevr"><tt class="xref py py-meth docutils literal"><span class="pre">Record.setSevr</span></tt></a></p>
 </dd></dl>
 
 <div class="section" id="module-devsup.db">
@@ -73,10 +73,10 @@
 <dl class="function">
 <dt id="devsup.db.getRecord">
 <tt class="descclassname">devsup.db.</tt><tt class="descname">getRecord</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#devsup.db.getRecord" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve a <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instance by the
+<dd><p>Retrieve a <a class="reference internal" href="#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> instance by the
 full record name.</p>
 <p>The result is cached so the future calls will return the same instance.
-This is the prefered way to get <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> instances.</p>
+This is the preferred way to get <a class="reference internal" href="#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> instances.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
 <span class="go">Record(&quot;my:record:name&quot;)</span>
 </pre></div>
@@ -84,16 +84,16 @@ This is the prefered way to get <tt class="xref py py-class docutils literal"><s
 </dd></dl>
 
 <div class="section" id="record-class">
-<h3><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> Class<a class="headerlink" href="#record-class" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference internal" href="#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> Class<a class="headerlink" href="#record-class" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="devsup.db.devsup.db.Record">
-<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">Record</tt><a class="headerlink" href="#devsup.db.devsup.db.Record" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record">
+<em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">Record</tt><a class="headerlink" href="#devsup.db.Record" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows access to a single record instance.
 <em>Record</em> instances can be created for any record in
 the process database.  However, some features will only
 function when the record has Python device support.</p>
 <p><em>Record</em> objects allow access to fields through the
-<tt class="xref py py-meth docutils literal"><span class="pre">field()</span></tt> method and direct access to field
+<a class="reference internal" href="#devsup.db.Record.field" title="devsup.db.Record.field"><tt class="xref py py-meth docutils literal"><span class="pre">field()</span></tt></a> method and direct access to field
 values through attributes.</p>
 <p>Attribute access is currently limited to scalar fields.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
@@ -106,8 +106,8 @@ values through attributes.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.name">
-<tt class="descclassname">Record.</tt><tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.name" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.name">
+<tt class="descname">name</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Record.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Record name string.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
@@ -117,8 +117,8 @@ values through attributes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.rtype">
-<tt class="descclassname">Record.</tt><tt class="descname">rtype</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.rtype" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.rtype">
+<tt class="descname">rtype</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Record.rtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Record type name string.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">getRecord</span><span class="p">(</span><span class="s">&quot;my:record:name&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
@@ -128,8 +128,8 @@ values through attributes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.field">
-<tt class="descclassname">Record.</tt><tt class="descname">field</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.field" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.field">
+<tt class="descname">field</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#devsup.db.Record.field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup field in this record</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,7 +137,7 @@ values through attributes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#devsup.db.Field" title="devsup.db.Field"><tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body">KeyError for non-existant fields.</td>
+<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body">KeyError for non-existent fields.</td>
 </tr>
 </tbody>
 </table>
@@ -150,16 +150,16 @@ return the same instance.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.setSevr">
-<tt class="descclassname">Record.</tt><tt class="descname">setSevr</tt><big>(</big><em>sevr=INVALID_ALARM</em>, <em>stat=COMM_ALARM</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.setSevr" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.setSevr">
+<tt class="descname">setSevr</tt><big>(</big><em>sevr=INVALID_ALARM</em>, <em>stat=COMM_ALARM</em><big>)</big><a class="headerlink" href="#devsup.db.Record.setSevr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal a new alarm condition.  The effect of this
 call depends on the current alarm condition.</p>
 <p>See <tt class="xref c c-func docutils literal"><span class="pre">recGblSetSevr()</span></tt> in EPICS Base.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.setTime">
-<tt class="descclassname">Record.</tt><tt class="descname">setTime</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.setTime" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.setTime">
+<tt class="descname">setTime</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#devsup.db.Record.setTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set record timestamp.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -171,18 +171,20 @@ call depends on the current alarm condition.</p>
 </table>
 <p>Has not effect if the TSE field is not set to -2.
 All inputs must be referenced to the posix epoch.</p>
+<p>If a datetime is provided, it must use the local system
+timezone.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.scan">
-<tt class="descclassname">Record.</tt><tt class="descname">scan</tt><big>(</big><em>sync=False</em>, <em>reason=None</em>, <em>force=0</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.scan" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.scan">
+<tt class="descname">scan</tt><big>(</big><em>sync=False</em>, <em>reason=None</em>, <em>force=0</em><big>)</big><a class="headerlink" href="#devsup.db.Record.scan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scan this record.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sync</strong> &#8211; scan in current thread (<tt class="docutils literal"><span class="pre">True</span></tt>), or queue (<tt class="docutils literal"><span class="pre">False</span></tt>).</li>
+<li><strong>sync</strong> &#8211; scan in current thread (<tt class="docutils literal"><span class="pre">True</span></tt>), or queue to a worker (<tt class="docutils literal"><span class="pre">False</span></tt>).</li>
 <li><strong>reason</strong> &#8211; Reason object passed to <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> (sync=True only)</li>
 <li><strong>force</strong> &#8211; Record processing condtion (0=Passive, 1=Force, 2=I/O Intr)</li>
 </ul>
@@ -193,26 +195,27 @@ All inputs must be referenced to the posix epoch.</p>
 </tr>
 </tbody>
 </table>
-<p>If <tt class="docutils literal"><span class="pre">sync</span></tt> is False then a
-scan request is queued to run in another thread..
-If <tt class="docutils literal"><span class="pre">sync</span></tt> is True then the record
-is scannined immidately on the current thread.</p>
+<p>If <tt class="docutils literal"><span class="pre">sync</span></tt> is False then a scan request is queued to run in another thread..
+If <tt class="docutils literal"><span class="pre">sync</span></tt> is True then the record is scanned immediately on the current thread.</p>
 <p>For <tt class="docutils literal"><span class="pre">reason</span></tt> argument must be used in conjunction with <tt class="docutils literal"><span class="pre">sync=True</span></tt>
 on records with Python device support.  This provides a means
 of providing extra contextual information to the record&#8217;s
 <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> method.</p>
-<p><tt class="docutils literal"><span class="pre">force</span></tt> is used to decide if the record will actuall be processed,
+<p><tt class="docutils literal"><span class="pre">force</span></tt> is used to decide if the record will actually be processed,
 <tt class="docutils literal"><span class="pre">force=0</span></tt> will only process records with SCAN=Passive.
 <tt class="docutils literal"><span class="pre">force=1</span></tt> will process any record if at all possible.
 <tt class="docutils literal"><span class="pre">force=2</span></tt> will only process records with Python device support and
 SCAN=I/O Intr.</p>
-<p>It is <strong>never</strong> safe to use <tt class="docutils literal"><span class="pre">sync=True</span></tt> while holding record locks,
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">It is <strong>never</strong> safe to use <tt class="docutils literal"><span class="pre">sync=True</span></tt> while holding record locks,
 including from within a <em>process</em> method.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.asyncStart">
-<tt class="descclassname">Record.</tt><tt class="descname">asyncStart</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.asyncStart" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.asyncStart">
+<tt class="descname">asyncStart</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Record.asyncStart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start asynchronous processing</p>
 <p>This method may be called from a device support
 <a class="reference internal" href="interfaces.html#DeviceSupport.process" title="DeviceSupport.process"><tt class="xref py py-meth docutils literal"><span class="pre">process</span></tt></a> method
@@ -225,11 +228,11 @@ later.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.asyncFinish">
-<tt class="descclassname">Record.</tt><tt class="descname">asyncFinish</tt><big>(</big><em>reason=None</em><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.asyncFinish" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.asyncFinish">
+<tt class="descname">asyncFinish</tt><big>(</big><em>reason=None</em><big>)</big><a class="headerlink" href="#devsup.db.Record.asyncFinish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicate that asynchronous processing can complete</p>
-<p>Similar to <tt class="xref py py-meth docutils literal"><span class="pre">scan()</span></tt>.  Used to conclude asynchronous
-process started with <tt class="xref py py-meth docutils literal"><span class="pre">asyncStart()</span></tt>.</p>
+<p>Similar to <a class="reference internal" href="#devsup.db.Record.scan" title="devsup.db.Record.scan"><tt class="xref py py-meth docutils literal"><span class="pre">scan()</span></tt></a>.  Used to conclude asynchronous
+process started with <a class="reference internal" href="#devsup.db.Record.asyncStart" title="devsup.db.Record.asyncStart"><tt class="xref py py-meth docutils literal"><span class="pre">asyncStart()</span></tt></a>.</p>
 <p>Processing is completed on the current thread.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -253,8 +256,8 @@ of indicating that this is the completion of an async action.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.info">
-<tt class="descclassname">Record.</tt><tt class="descname">info</tt><big>(</big><em>key</em><span class="optional">[</span>, <em>default</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.info" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.info">
+<tt class="descname">info</tt><big>(</big><em>key</em><span class="optional">[</span>, <em>default</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#devsup.db.Record.info" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -271,8 +274,8 @@ if the info key does not exist.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="devsup.db.devsup.db.Record.Record.infos">
-<tt class="descclassname">Record.</tt><tt class="descname">infos</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.devsup.db.Record.Record.infos" title="Permalink to this definition">¶</a></dt>
+<dt id="devsup.db.Record.infos">
+<tt class="descname">infos</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Record.infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dictionary of all info tags
 for this record</p>
 </dd></dl>
@@ -299,7 +302,7 @@ for this record</p>
 <dl class="attribute">
 <dt id="devsup.db.Field.record">
 <tt class="descname">record</tt><a class="headerlink" href="#devsup.db.Field.record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch the <tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt> associated with this field</p>
+<dd><p>Fetch the <a class="reference internal" href="#devsup.db.Record" title="devsup.db.Record"><tt class="xref py py-class docutils literal"><span class="pre">Record</span></tt></a> associated with this field</p>
 </dd></dl>
 
 <dl class="method">
@@ -324,7 +327,7 @@ A <tt class="docutils literal"><span class="pre">str</span></tt> is returned for
 <dt id="devsup.db.Field.putval">
 <tt class="descname">putval</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#devsup.db.Field.putval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the field value</p>
-<p>Must be an Int, Float or str.  Strings will be truncated to 39 charactors.</p>
+<p>Must be an Int, Float or str.  Strings will be truncated to 39 characters.</p>
 </dd></dl>
 
 <dl class="method">
@@ -341,6 +344,24 @@ lock is held (ie withing <a class="reference internal" href="interfaces.html#Dev
 </dd></dl>
 
 <dl class="method">
+<dt id="devsup.db.Field.getarraylen">
+<tt class="descname">getarraylen</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getarraylen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of active elements for the field.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">F</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">F</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">F</span><span class="o">.</span><span class="n">getarraylen</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="devsup.db.Field.putarraylen">
+<tt class="descname">putarraylen</tt><big>(</big><em>len</em><big>)</big><a class="headerlink" href="#devsup.db.Field.putarraylen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the number of active elements in field&#8217;s array.</p>
+<p>Requires that the underlying field be an array.
+Must be greater than one and less than or equal to the maximum length of the field.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="devsup.db.Field.fieldinfo">
 <tt class="descname">fieldinfo</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.fieldinfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>(type, size, #elements) = fieldinfo()</p>
@@ -354,7 +375,7 @@ size is number of bytes to start a single element
 <tt class="descname">getTime</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get timestamp of link target.</p>
 <p>Only works for DBF_INLINK fields.
-Returns the time in seconds since the posix epoch.</p>
+Returns the time in seconds since the POSIX epoch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -368,7 +389,7 @@ Returns the time in seconds since the posix epoch.</p>
 <dl class="method">
 <dt id="devsup.db.Field.getAlarm">
 <tt class="descname">getAlarm</tt><big>(</big><big>)</big><a class="headerlink" href="#devsup.db.Field.getAlarm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a tuple (severity, status) with the condtion of the linked field.</p>
+<dd><p>Returns a tuple (severity, status) with the condition of the linked field.</p>
 <p>Only works for fields of type DBF_INLINK.</p>
 </dd></dl>
 
@@ -378,7 +399,7 @@ Returns the time in seconds since the posix epoch.</p>
 <dt id="devsup.db.IOScanListBlock">
 <em class="property">class </em><tt class="descclassname">devsup.db.</tt><tt class="descname">IOScanListBlock</tt><a class="headerlink" href="#devsup.db.IOScanListBlock" title="Permalink to this definition">¶</a></dt>
 <dd><p>A list of records which will be processed together.</p>
-<p>This convienence class to handle the accounting to
+<p>This convenience class to handle the accounting to
 maintain a list of records.</p>
 <dl class="method">
 <dt id="devsup.db.IOScanListBlock.add">
@@ -418,7 +439,7 @@ If fact this function can be completely delegated.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reason</strong> &#8211; Passed to <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt>.</li>
+<li><strong>reason</strong> &#8211; Passed to <a class="reference internal" href="#devsup.db.Record.scan" title="devsup.db.Record.scan"><tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt></a>.</li>
 <li><strong>mask</strong> &#8211; A <em>list</em> or <em>set</em> or records which should not be scanned.</li>
 </ul>
 </td>
@@ -428,7 +449,7 @@ If fact this function can be completely delegated.</p>
 </tr>
 </tbody>
 </table>
-<p>This method will call <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt> of each of the records
+<p>This method will call <a class="reference internal" href="#devsup.db.Record.scan" title="devsup.db.Record.scan"><tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt></a> of each of the records
 currently in the list.  This is done synchronously in the current
 thread.  It should <strong>never</strong> be call when any record locks are held.</p>
 </dd></dl>
@@ -471,14 +492,14 @@ without additional locking.</p>
 
 <dl class="method">
 <dt id="devsup.db.IOScanListThread.interrupt">
-<tt class="descname">interrupt</tt><big>(</big><em>reason=None</em>, <em>mask=None</em>, <em>whendone=&lt;function _default_whendone at 0xa911f7c&gt;</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListThread.interrupt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">interrupt</tt><big>(</big><em>reason=None</em>, <em>mask=None</em>, <em>whendone=&lt;function _default_whendone at 0x2c81140&gt;</em><big>)</big><a class="headerlink" href="#devsup.db.IOScanListThread.interrupt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queue a request to process the scan list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>reason</strong> &#8211; Passed to <tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt>.</li>
+<li><strong>reason</strong> &#8211; Passed to <a class="reference internal" href="#devsup.db.Record.scan" title="devsup.db.Record.scan"><tt class="xref py py-meth docutils literal"><span class="pre">Record.scan()</span></tt></a>.</li>
 <li><strong>mask</strong> &#8211; A <em>list</em> or <em>set</em> or records which should not be scanned.</li>
 <li><strong>whendone</strong> &#8211; A callable which will be invoked after all records are processed.</li>
 </ul>
@@ -608,7 +629,7 @@ Return value is the same as shouldRun()</p>
 </div>
 <dl class="attribute">
 <dt id="devsup.util.Worker.StopWorker">
-<tt class="descname">StopWorker</tt><em class="property"> = &lt;object object at 0xa8443f0&gt;</em><a class="headerlink" href="#devsup.util.Worker.StopWorker" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">StopWorker</tt><em class="property"> = &lt;object object at 0x2a61af0&gt;</em><a class="headerlink" href="#devsup.util.Worker.StopWorker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

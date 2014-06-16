@@ -66,7 +66,7 @@ will typically sub-class <a class="reference internal" href="#devsup.ptable.Tabl
 <dt id="devsup.ptable.Parameter">
 <em class="property">class </em><tt class="descclassname">devsup.ptable.</tt><tt class="descname">Parameter</tt><big>(</big><em>name=None</em>, <em>iointr=False</em><big>)</big><a class="headerlink" href="#devsup.ptable.Parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define a parameter in a table.</p>
-<p>When a sub-class of TableBase is instancianted, parameters become
+<p>When a sub-class of TableBase is instantiated, parameters become
 py:class:<cite>_ParamInstance</cite> instances.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">TableBase</span><span class="p">):</span>
 <span class="go">    A = Parameter()</span>
@@ -135,7 +135,7 @@ an attached device support processes.</p>
 <dt id="devsup.ptable.ParameterGroup">
 <em class="property">class </em><tt class="descclassname">devsup.ptable.</tt><tt class="descname">ParameterGroup</tt><big>(</big><em>params</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#devsup.ptable.ParameterGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A helper for defining actions on groups of parameters</p>
-<p>When a sub-class of TableBase is instancianted, parameter groups become
+<p>When a sub-class of TableBase is instantiated, parameter groups become
 py:class:<cite>_ParamGroupInstance</cite> instances.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">TableBase</span><span class="p">):</span>
 <span class="go">    A = Parameter()</span>
@@ -161,7 +161,7 @@ as actions based on the value of parameters in this group.</p>
 <dl class="method">
 <dt id="devsup.ptable.ParameterGroup.oncondition">
 <tt class="descname">oncondition</tt><big>(</big><em>fmap</em>, <em>freduce=&lt;built-in function all&gt;</em><big>)</big><a class="headerlink" href="#devsup.ptable.ParameterGroup.oncondition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator for a custom condtion.</p>
+<dd><p>Decorator for a custom condition.</p>
 <p>The condition is specified in two parts, a map function, and a reduce function.
 The map function is applied to each parameter in the group.  Then a list
 of the results is passed to the reduce function.  If not specified,
@@ -181,7 +181,7 @@ the default reducing function is all (map func must return bool).</p>
 <dt id="devsup.ptable.ParameterGroup.onproc">
 <tt class="descname">onproc</tt><big>(</big><em>fn</em><big>)</big><a class="headerlink" href="#devsup.ptable.ParameterGroup.onproc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator run a member function action whenever
-a device support attached to any paramter in the group processes.</p>
+a device support attached to any parameter in the group processes.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">TableBase</span><span class="p">):</span>
 <span class="go">    A, B = Parameter(), Parameter()</span>
 <span class="go">    grp = ParameterGroup([A,B])    </span>
@@ -199,7 +199,7 @@ a device support attached to any paramter in the group processes.</p>
 <em class="property">class </em><tt class="descclassname">devsup.ptable.</tt><tt class="descname">TableBase</tt><big>(</big><em>**kws</em><big>)</big><a class="headerlink" href="#devsup.ptable.TableBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for all parameter tables.</p>
 <p>Sub-class this and populate with <a class="reference internal" href="#devsup.ptable.Parameter" title="devsup.ptable.Parameter"><tt class="xref py py-class docutils literal"><span class="pre">Parameter</span></tt></a> and  <a class="reference internal" href="#devsup.ptable.ParameterGroup" title="devsup.ptable.ParameterGroup"><tt class="xref py py-class docutils literal"><span class="pre">ParameterGroup</span></tt></a>.</p>
-<p>When a table is instanciated it must be given a unique name.</p>
+<p>#When a table is instantiated it must be given a unique name.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">TableBase</span><span class="p">):</span>
 <span class="go">    ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="n">MyTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;xyz&#39;</span><span class="p">)</span>
