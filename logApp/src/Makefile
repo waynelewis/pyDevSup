@@ -9,7 +9,8 @@ include $(TOP)/configure/CONFIG_PY
 #=============================
 # Build the IOC application
 
-LOADABLE_LIBRARY_HOST = _inotifyy
+LOADABLE_LIBRARY_HOST_Darwin = -nil-
+LOADABLE_LIBRARY_HOST_DEFAULT = _inotifyy
 
 _inotifyy_SRCS += inotify_wrap.c
 
