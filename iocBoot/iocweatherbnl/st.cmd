@@ -1,10 +1,10 @@
-#!../../bin/linux-x86/softIocPy2.6
+#!../../bin/darwin-x86/softIocPy2.7
 
 < envPaths
 
 cd("$(TOP)")
 
-epicsEnvSet("http_proxy", "http://proxy:8888/")
+#epicsEnvSet("http_proxy", "http://proxy:8888/")
 
 epicsEnvSet("PYTHONPATH", "${TOP}/python/$(ARCH)")
 
